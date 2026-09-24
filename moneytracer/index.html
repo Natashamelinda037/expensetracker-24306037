@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Expense Tracker</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --danger: #ef4444;
+            --success: #10b981;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            color: var(--text-main);
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            color: var(--primary);
+            font-size: 28px;
+        }
+
+        header p {
+            color: var(--text-muted);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .stat-card p {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--text-main);
+        }
+
+        .stat-card.over {
+            border-color: var(--danger);
+            background: #fef2f2;
+        }
+
+        .stat-card.over p {
+            color: var(--danger);
+        }
+
+        .stat-card.income {
+            border-color: var(--success);
+            background: #f0fdf4;
+        }
+
+        .stat-card.income p {
+            color: var(--success);
+        }
+
+        .form-container {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr 1fr auto;
+            gap: 15px;
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            padding: 10px 0;
+        }
+
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .radio-group label.label-expense {
+            color: var(--danger);
+        }
+
+        .radio-group label.label-income {
+            color: var(--success);
+        }
+
+        .radio-group input[type="radio"] {
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .btn-cancel {
+            background: var(--text-muted);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .table-container {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--bg);
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 30px !important;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .badge-makan {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-transport {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-kuota {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-gaji {
+            background: #ede9fe;
+            color: #5b21b6;
+        }
+
+        .badge-uang-bulanan {
+            background: #fce7f3;
+            color: #9d174d;
+        }
+
+        .badge-lainnya {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .badge-income {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-expense {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .amount-income {
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        .amount-expense {
+            color: var(--danger);
+            font-weight: bold;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-right: 5px;
+            color: white;
+        }
+
+        .btn-edit {
+            background: var(--primary);
+        }
+
+        .btn-delete {
+            background: var(--danger);
+        }
+
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        .modal-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 15px;
+            background: #fee2e2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-icon svg {
+            width: 32px;
+            height: 32px;
+            color: var(--danger);
+        }
+
+        .modal-box h3 {
+            font-size: 18px;
+            color: var(--text-main);
+            margin-bottom: 10px;
+        }
+
+        .modal-box p {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 25px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .modal-actions button {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.2s;
+        }
+
+        .modal-actions .btn-modal-cancel {
+            background: var(--bg);
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+        }
+
+        .modal-actions .btn-modal-cancel:hover {
+            background: var(--border);
+        }
+
+        .modal-actions .btn-modal-delete {
+            background: var(--danger);
+            color: white;
+        }
+
+        .modal-actions .btn-modal-delete:hover {
+            background: #dc2626;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Student Expense Tracker</h1>
+        <p>Kelola keuangan bulanan Anda...</p>
+    </header>
+
+    <section class="stats-grid">
+        <div class="stat-card income">
+            <h3>Total Pemasukan</h3>
+            <p id="stat-income">Rp 0</p>
+        </div>
+        <div class="stat-card">
+            <h3>Total Pengeluaran</h3>
+            <p id="stat-expense">Rp 0</p>
+        </div>
+        <div class="stat-card" id="card-budget">
+            <h3>Sisa Budget</h3>
+            <p id="stat-budget">Rp 0</p>
+        </div>
+        <div class="stat-card">
+            <h3>Pengeluaran Hari Ini</h3>
+            <p id="stat-today">Rp 0</p>
+        </div>
+    </section>
+
+    <section class="form-container">
+        <form id="expense-form">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Tipe Transaksi</label>
+                    <div class="radio-group">
+                        <label class="label-expense">
+                            <input type="radio" name="type" value="expense" checked> Pengeluaran
+                        </label>
+                        <label class="label-income">
+                            <input type="radio" name="type" value="income"> Pemasukan
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="desc">Deskripsi</label>
+                    <input type="text" id="desc" placeholder="Cth: Makan siang" required>
+                </div>
+                <div class="form-group">
+                    <label for="amount">Nominal (Rp)</label>
+                    <input type="number" id="amount" placeholder="50000" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="category">Kategori</label>
+                    <select id="category" required>
+                        <option value="Makan">Makan</option>
+                        <option value="Transport">Transport</option>
+                        <option value="Kuota">Kuota</option>
+                        <option value="Gaji">Gaji</option>
+                        <option value="Uang Bulanan">Uang Bulanan</option>
+                        <option value="Lainnya">Lainnya</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>&nbsp;</label>
+                    <button type="submit" class="btn-primary" id="btn-submit">Tambah</button>
+                    <button type="button" class="btn-cancel" id="btn-cancel" style="display:none;">Batal</button>
+                </div>
+            </div>
+            <div class="form-group" id="custom-category-group" style="display:none; margin-top:15px;">
+                <label for="custom-category">Nama Kategori Custom</label>
+                <input type="text" id="custom-category" placeholder="Ketik kategori sendiri...">
+            </div>
+            <input type="hidden" id="edit-id">
+        </form>
+    </section>
+
+    <section class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Tanggal</th>
+                    <th>Tipe</th>
+                    <th>Deskripsi</th>
+                    <th>Kategori</th>
+                    <th>Nominal</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="expense-list">
+                <tr>
+                    <td colspan="6" class="empty-state">Memuat data...</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <div class="modal-overlay" id="delete-modal">
+        <div class="modal-box">
+            <div class="modal-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                        d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                </svg>
+            </div>
+            <h3>Hapus Data?</h3>
+            <p>Data yang sudah dihapus tidak bisa dikembalikan lagi.</p>
+            <div class="modal-actions">
+                <button class="btn-modal-cancel" id="modal-cancel-btn">Batal</button>
+                <button class="btn-modal-delete" id="modal-confirm-btn">Ya, Hapus</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, updateDoc, serverTimestamp, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBoYUEZIzOjqspeK6WFr3qA8WwkDH_0bCM",
+            authDomain: "p2crud243026037.firebaseapp.com",
+            projectId: "p2crud243026037",
+            storageBucket: "p2crud243026037.firebasestorage.app",
+            messagingSenderId: "909867398859",
+            appId: "1:909867398859:web:b83aa7cf66d651678f0d4e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const expensesCollection = collection(db, "expenses");
+
+        console.log("Firebase berhasil dihubungkan!");
+
+        const formatRupiah = (angka) => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(angka);
+
+        const q = query(expensesCollection, orderBy("createdAt", "desc"));
+
+        const categorySelect = document.getElementById('category');
+        const customCategoryGroup = document.getElementById('custom-category-group');
+        const customCategoryInput = document.getElementById('custom-category');
+
+        categorySelect.addEventListener('change', () => {
+            if (categorySelect.value === 'Lainnya') {
+                customCategoryGroup.style.display = 'flex';
+                customCategoryInput.required = true;
+            } else {
+                customCategoryGroup.style.display = 'none';
+                customCategoryInput.required = false;
+                customCategoryInput.value = '';
+            }
+        });
+
+        onSnapshot(q, (snapshot) => {
+            const list = document.getElementById('expense-list');
+            list.innerHTML = '';
+
+            let totalIncome = 0;
+            let totalExpense = 0;
+            let totalToday = 0;
+            const currentMonth = new Date().getMonth();
+            const todayString = new Date().toDateString();
+
+            if (snapshot.empty) {
+                list.innerHTML = `<tr><td colspan="6" class="empty-state">Belum ada data.</td></tr>`;
+            }
+
+            snapshot.forEach((docSnap) => {
+                const data = docSnap.data();
+                const id = docSnap.id;
+                const expDate = data.createdAt?.toDate() || new Date();
+                const type = data.type || 'expense';
+                const category = data.category || 'Lainnya';
+
+                if (expDate.getMonth() === currentMonth) {
+                    if (type === 'income') totalIncome += data.amount;
+                    else totalExpense += data.amount;
+                }
+
+                if (expDate.toDateString() === todayString && type === 'expense') {
+                    totalToday += data.amount;
+                }
+
+                const row = document.createElement('tr');
+                const typeBadge = type === 'income'
+                    ? '<span class="badge badge-income">Pemasukan</span>'
+                    : '<span class="badge badge-expense">Pengeluaran</span>';
+                const amountClass = type === 'income' ? 'amount-income' : 'amount-expense';
+                const amountPrefix = type === 'income' ? '+' : '-';
+
+                const categoryClass = 'badge-' + category.toLowerCase().replace(/\s+/g, '-');
+                const categoryBadge = `<span class="badge ${categoryClass}">${category}</span>`;
+
+                row.innerHTML = `
+                    <td>${expDate.toLocaleDateString('id-ID')}</td>
+                    <td>${typeBadge}</td>
+                    <td>${data.description}</td>
+                    <td>${categoryBadge}</td>
+                    <td class="${amountClass}">${amountPrefix} ${formatRupiah(data.amount)}</td>
+                    <td>
+                        <button class="action-btn btn-edit" onclick="window.editExpense('${id}', '${data.description}', ${data.amount}, '${category}', '${type}')">Edit</button>
+                        <button class="action-btn btn-delete" onclick="window.deleteExpense('${id}')">Hapus</button>
+                    </td>
+                `;
+                list.appendChild(row);
+            });
+
+            const remaining = totalIncome - totalExpense;
+            document.getElementById('stat-income').textContent = formatRupiah(totalIncome);
+            document.getElementById('stat-expense').textContent = formatRupiah(totalExpense);
+            document.getElementById('stat-budget').textContent = formatRupiah(remaining);
+            document.getElementById('stat-today').textContent = formatRupiah(totalToday);
+
+            const budgetCard = document.getElementById('card-budget');
+            if (remaining < 0) {
+                budgetCard.classList.add('over');
+                budgetCard.classList.remove('income');
+            } else {
+                budgetCard.classList.remove('over');
+                budgetCard.classList.add('income');
+            }
+        });
+
+        document.getElementById('expense-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const type = document.querySelector('input[name="type"]:checked').value;
+            const desc = document.getElementById('desc').value;
+            const amount = Number(document.getElementById('amount').value);
+            const editId = document.getElementById('edit-id').value;
+
+            let category = categorySelect.value;
+            if (category === 'Lainnya') {
+                category = customCategoryInput.value.trim() || 'Lainnya';
+            }
+
+            try {
+                if (editId) {
+                    await updateDoc(doc(db, "expenses", editId), {
+                        type: type,
+                        description: desc,
+                        amount: amount,
+                        category: category
+                    });
+                } else {
+                    await addDoc(expensesCollection, {
+                        type: type,
+                        description: desc,
+                        amount: amount,
+                        category: category,
+                        createdAt: serverTimestamp()
+                    });
+                }
+
+                document.getElementById('expense-form').reset();
+                document.getElementById('edit-id').value = '';
+                document.getElementById('btn-submit').textContent = 'Tambah';
+                document.getElementById('btn-cancel').style.display = 'none';
+                document.querySelector('input[name="type"][value="expense"]').checked = true;
+                customCategoryGroup.style.display = 'none';
+                customCategoryInput.value = '';
+
+            } catch (error) {
+                console.error("Error: ", error);
+                alert("Gagal menyimpan data.");
+            }
+        });
+
+        let deleteTargetId = null;
+
+        window.deleteExpense = (id) => {
+            deleteTargetId = id;
+            document.getElementById('delete-modal').classList.add('active');
+        };
+
+        document.getElementById('modal-cancel-btn').addEventListener('click', () => {
+            deleteTargetId = null;
+            document.getElementById('delete-modal').classList.remove('active');
+        });
+
+        document.getElementById('modal-confirm-btn').addEventListener('click', async () => {
+            if (deleteTargetId) {
+                try {
+                    await deleteDoc(doc(db, "expenses", deleteTargetId));
+                } catch (error) {
+                    console.error("Error menghapus data: ", error);
+                    alert("Gagal menghapus data.");
+                }
+            }
+            deleteTargetId = null;
+            document.getElementById('delete-modal').classList.remove('active');
+        });
+
+        document.getElementById('delete-modal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('delete-modal')) {
+                deleteTargetId = null;
+                document.getElementById('delete-modal').classList.remove('active');
+            }
+        });
+
+        window.editExpense = (id, desc, amount, category, type) => {
+            document.querySelector(`input[name="type"][value="${type}"]`).checked = true;
+            document.getElementById('desc').value = desc;
+            document.getElementById('amount').value = amount;
+            document.getElementById('edit-id').value = id;
+
+            const categoryOptions = Array.from(categorySelect.options).map(opt => opt.value);
+            if (categoryOptions.includes(category)) {
+                categorySelect.value = category;
+                customCategoryGroup.style.display = 'none';
+                customCategoryInput.value = '';
+            } else {
+                categorySelect.value = 'Lainnya';
+                customCategoryGroup.style.display = 'flex';
+                customCategoryInput.value = category;
+            }
+
+            document.getElementById('btn-submit').textContent = 'Update';
+            document.getElementById('btn-cancel').style.display = 'inline-block';
+        };
+
+        document.getElementById('btn-cancel').addEventListener('click', () => {
+            document.getElementById('expense-form').reset();
+            document.getElementById('edit-id').value = '';
+            document.getElementById('btn-submit').textContent = 'Tambah';
+            document.getElementById('btn-cancel').style.display = 'none';
+            document.querySelector('input[name="type"][value="expense"]').checked = true;
+            customCategoryGroup.style.display = 'none';
+            customCategoryInput.value = '';
+        });
+    </script>
+</body>
+
+</html>
